@@ -384,8 +384,8 @@ export default function RoadmapPage() {
             {roadmap && (
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 animate-in fade-in slide-in-from-bottom-4">
 
-                    {/* Left Column: Tips (Implementation Plan Style) */}
-                    <div className="lg:col-span-1 space-y-6">
+                    {/* Left Column: Tips (Desktop Only - Sticky) */}
+                    <div className="lg:col-span-1 space-y-6 hidden lg:block">
                         {tips.length > 0 && (
                             <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden lg:sticky lg:top-24">
                                 <div className="p-4 border-b border-slate-800 bg-slate-800/50">
@@ -422,7 +422,7 @@ export default function RoadmapPage() {
                             </h2>
                             <div className="flex items-center gap-4">
                                 {/* Progress Indicator */}
-                                <div className="flex items-center gap-3 bg-slate-900/50 border border-slate-800 px-4 py-2 rounded-full">
+                                <div className="flex items-center gap-3 bg-slate-900/50 border border-slate-800 px-4 py-2 rounded-full hidden sm:flex">
                                     <div className="flex flex-col items-end">
                                         <span className="text-xs text-slate-400 font-medium">{progressPercentage}% Complete</span>
                                         <div className="w-24 h-1.5 bg-slate-800 rounded-full mt-1 overflow-hidden">
@@ -441,14 +441,39 @@ export default function RoadmapPage() {
                             </div>
                         </div>
 
+                        {/* Mobile: Collapsible Study Strategy */}
+                        <div className="lg:hidden mb-6">
+                            <details className="group bg-slate-900/50 border border-slate-800 rounded-xl overflow-hidden">
+                                <summary className="flex items-center justify-between p-4 cursor-pointer list-none text-white font-medium">
+                                    <div className="flex items-center gap-2">
+                                        <Lightbulb className="text-yellow-400" size={18} />
+                                        <span>Study Strategy & Tips</span>
+                                    </div>
+                                    <ChevronDown size={18} className="transition-transform group-open:rotate-180 text-slate-400" />
+                                </summary>
+                                <div className="p-4 border-t border-slate-800 bg-slate-900/30">
+                                    <ul className="space-y-3">
+                                        {tips.map((tip, index) => (
+                                            <li key={index} className="flex gap-3 text-sm text-slate-300">
+                                                <div className="mt-0.5 min-w-[16px] h-4 rounded border border-slate-600 flex items-center justify-center">
+                                                    <div className="w-2 h-2 bg-blue-500 rounded-sm"></div>
+                                                </div>
+                                                <span className="leading-relaxed">{tip}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </details>
+                        </div>
+
                         {filteredWeeks?.length === 0 ? (
                             <div className="text-center py-12 bg-slate-900/50 border border-slate-800 rounded-xl">
                                 <Search size={48} className="mx-auto mb-4 text-slate-600" />
                                 <p className="text-slate-400">No weeks found matching "{searchQuery}"</p>
                             </div>
                         ) : (
-                            <div className="relative space-y-8">
-                                {/* Timeline Line */}
+                            <div className="relative space-y-6 md:space-y-8">
+                                {/* Timeline Line - Hidden on very small screens, visible on md+ */}
                                 <div className="absolute left-6 top-4 bottom-4 w-0.5 bg-gradient-to-b from-blue-500 via-cyan-500 to-slate-800 hidden md:block" />
 
                                 {filteredWeeks?.map((week, index) => {
@@ -640,6 +665,32 @@ export default function RoadmapPage() {
                                                                                     ▶️ YouTube
                                                                                 </a>
                                                                                 <a
+                                                                                    href={taskLinks.udemy || `https://www.udemy.com/courses/search/?src=ukw&q=${encodeURIComponent(taskTitle)}`}
+                                                                                    target="_blank"
+                                                                                    rel="noopener noreferrer"
+                                                                                    onClick={(e) => e.stopPropagation()}
+                                                                                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${isTaskDone
+                                                                                        ? 'bg-slate-800/30 text-slate-600 hover:bg-slate-800/50'
+                                                                                        : 'bg-purple-900/30 text-purple-400 hover:bg-purple-600 hover:text-white border border-purple-900/50 hover:border-purple-500'
+                                                                                        }`}
+                                                                                    title="Search on Udemy"
+                                                                                >
+                                                                                    🟣 Udemy
+                                                                                </a>
+                                                                                <a
+                                                                                    href={taskLinks.coursera || `https://www.coursera.org/search?query=${encodeURIComponent(taskTitle)}`}
+                                                                                    target="_blank"
+                                                                                    rel="noopener noreferrer"
+                                                                                    onClick={(e) => e.stopPropagation()}
+                                                                                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${isTaskDone
+                                                                                        ? 'bg-slate-800/30 text-slate-600 hover:bg-slate-800/50'
+                                                                                        : 'bg-blue-900/30 text-blue-400 hover:bg-blue-600 hover:text-white border border-blue-900/50 hover:border-blue-500'
+                                                                                        }`}
+                                                                                    title="Search on Coursera"
+                                                                                >
+                                                                                    🔵 Coursera
+                                                                                </a>
+                                                                                <a
                                                                                     href={taskLinks.practice}
                                                                                     target="_blank"
                                                                                     rel="noopener noreferrer"
@@ -685,3 +736,5 @@ export default function RoadmapPage() {
         </div>
     );
 }
+
+

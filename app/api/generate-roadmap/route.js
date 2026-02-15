@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // ========================================
-// CURATED RESOURCE DATABASE
+// CURATED RESOURCE DATABASE (EXPANDED)
 // ========================================
 const CURATED_RESOURCES = {
-    // Web Development
+    // --- TECH & CODING ---
     'web development': {
         name: 'freeCodeCamp Web Development',
         url: 'https://www.freecodecamp.org/learn/2022/responsive-web-design/',
@@ -12,171 +13,292 @@ const CURATED_RESOURCES = {
         youtubeChannel: 'https://www.youtube.com/@freecodecamp',
         practiceSite: 'https://www.frontendmentor.io/challenges',
         topics: [
-            'HTML Basics - Learn HTML by Building a Cat Photo App',
-            'CSS Fundamentals - Learn Basic CSS by Building a Cafe Menu',
-            'CSS Colors - Learn CSS Colors by Building a Set of Colored Markers',
-            'HTML Forms - Learn HTML Forms by Building a Registration Form',
-            'CSS Box Model - Learn the CSS Box Model by Building a Rothko Painting',
-            'CSS Flexbox - Learn CSS Flexbox by Building a Photo Gallery',
-            'Typography - Learn Typography by Building a Nutrition Label',
-            'Accessibility - Learn Accessibility by Building a Quiz',
-            'CSS Pseudo Selectors - Learn More About CSS Pseudo Selectors by Building Balance Sheet',
-            'Intermediate CSS - Learn Intermediate CSS by Building a Cat Painting',
-            'Responsive Design - Learn Responsive Web Design by Building a Piano',
-            'CSS Variables - Learn CSS Variables by Building a City Skyline',
-            'CSS Grid - Learn CSS Grid by Building a Magazine',
-            'CSS Transforms - Learn CSS Transforms by Building a Penguin',
-            'CSS Animation - Learn CSS Animation by Building a Ferris Wheel'
+            'HTML Basics - Structure & Semantics',
+            'CSS Fundamentals - Box Model, Flexbox, Grid',
+            'Responsive Design - Media Queries',
+            'JavaScript Basics - Variables, Loops, Functions',
+            'DOM Manipulation - Events & Interactivity',
+            'Async JavaScript - Fetch API, Promises',
+            'Frontend Frameworks - React/Vue Basics',
+            'State Management - Redux/Context',
+            'Git & GitHub - Version Control',
+            'Deployment - Netlify/Vercel'
         ]
     },
     'javascript': {
-        name: 'JavaScript.info Modern JavaScript',
+        name: 'JavaScript.info',
         url: 'https://javascript.info/',
         platform: 'documentation',
         youtubeChannel: 'https://www.youtube.com/@TraversyMedia',
         practiceSite: 'https://www.codewars.com/kata/search/javascript',
         topics: [
-            'JavaScript Fundamentals - Variables, Data Types',
-            'Code Quality - Debugging, Comments, Testing',
-            'Objects: The Basics - Object Fundamentals',
-            'Data Types - Methods of primitives, Numbers, Strings',
-            'Arrays - Array Methods',
-            'Iterables - Map and Set',
-            'Functions - Function expressions, Arrow functions',
-            'Advanced Functions - Recursion, Closures',
-            'Object Properties - Property flags, Getters and setters',
-            'Prototypes - Prototypal inheritance',
-            'Classes - Class basic syntax, Inheritance',
-            'Error Handling - Try...catch',
-            'Promises - Async/await',
-            'Generators - Iterators and generators',
-            'Modules - Import/export'
+            'JS Fundamentals - Variables, Types',
+            'Code Quality - Debugging, Testing',
+            'Objects & Arrays - Methods & Properties',
+            'Functions - Arrow Fn, Closures',
+            'Prototypes & Classes - OOP in JS',
+            'Async JS - Promises, Async/Await',
+            'DOM - Document Object Model',
+            'Events - Bubbling, Delegation',
+            'Error Handling - Try/Catch',
+            'ES6+ Features - Modules, Destructuring'
         ]
     },
-    'react': {
-        name: 'React Official Documentation',
-        url: 'https://react.dev/learn',
-        platform: 'documentation',
-        youtubeChannel: 'https://www.youtube.com/@CodevolutionReact',
-        practiceSite: 'https://react-tutorial.app/',
-        topics: [
-            'Quick Start - Your First Component',
-            'Thinking in React - Building UI',
-            'Describing the UI - Components and Props',
-            'Adding Interactivity - Responding to Events',
-            'State Management - Managing State',
-            'Escape Hatches - useEffect and Refs',
-            'Advanced Hooks - useContext, useReducer',
-            'Component Patterns - Composition vs Inheritance',
-            'Performance - Memoization and Optimization',
-            'Custom Hooks - Reusing Logic',
-            'Advanced Patterns - Render Props, HOCs',
-            'React Router - Navigation',
-            'Form Handling - Controlled Components',
-            'API Integration - Data Fetching',
-            'Testing - Jest and Testing Library'
-        ]
-    },
-
-    // Data Structures & Algorithms
-    'data structures': {
-        name: 'freeCodeCamp DSA Course',
-        url: 'https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures-v8/',
-        platform: 'freecodecamp',
-        youtubeChannel: 'https://www.youtube.com/@freeCodeCamp',
-        practiceSite: 'https://leetcode.com/problemset/',
-        topics: [
-            'Arrays - Basic Array Operations',
-            'Strings - String Manipulation',
-            'Searching - Linear and Binary Search',
-            'Sorting Algorithms - Bubble, Selection, Insertion Sort',
-            'Linked Lists - Singly and Doubly Linked Lists',
-            'Stacks - Implementation and Applications',
-            'Queues - Queue Operations and Variants',
-            'Hash Tables - Hash Maps and Sets',
-            'Trees - Binary Trees, BST',
-            'Tree Traversal - Inorder, Preorder, Postorder',
-            'Graphs - Graph Representation',
-            'Graph Algorithms - BFS, DFS',
-            'Dynamic Programming - Memoization and Tabulation',
-            'Recursion - Recursive Problem Solving',
-            'Advanced Algorithms - Greedy, Divide and Conquer'
-        ]
-    },
-    'algorithms': {
-        name: 'NeetCode Roadmap',
-        url: 'https://neetcode.io/roadmap',
-        platform: 'course',
-        youtubeChannel: 'https://www.youtube.com/@NeetCode',
-        practiceSite: 'https://leetcode.com/study-plan/',
-        topics: [
-            'Arrays & Hashing - Two Sum, Contains Duplicate',
-            'Two Pointers - Valid Palindrome, Two Sum II',
-            'Sliding Window - Best Time to Buy Stock',
-            'Stack - Valid Parentheses',
-            'Binary Search - Search in Rotated Array',
-            'Linked List - Reverse Linked List, Merge Lists',
-            'Trees - Invert Binary Tree, Max Depth',
-            'Tries - Implement Trie',
-            'Heap/Priority Queue - Kth Largest Element',
-            'Backtracking - Combination Sum',
-            'Graphs - Number of Islands, Clone Graph',
-            'Advanced Graphs - Course Schedule',
-            '1-D Dynamic Programming - Climbing Stairs',
-            '2-D Dynamic Programming - Unique Paths',
-            'Greedy - Maximum Subarray'
-        ]
-    },
-
-    // Python
     'python': {
-        name: 'Python Official Tutorial',
+        name: 'Python.org Official Docs',
         url: 'https://docs.python.org/3/tutorial/',
         platform: 'documentation',
         youtubeChannel: 'https://www.youtube.com/@coreyms',
         practiceSite: 'https://www.hackerrank.com/domains/python',
         topics: [
-            'Python Basics - Variables and Data Types',
-            'Control Flow - If statements, Loops',
-            'Data Structures - Lists, Tuples, Dictionaries',
-            'Functions - Defining Functions',
-            'Modules - Creating and Using Modules',
-            'Input/Output - File Handling',
-            'Errors and Exceptions - Error Handling',
-            'Classes - Object-Oriented Programming',
-            'Standard Library - Common Modules',
-            'Virtual Environments - Package Management',
-            'Iterators and Generators - Advanced Iteration',
-            'Decorators - Function Decorators',
-            'Context Managers - with statement',
-            'Regular Expressions - Pattern Matching',
-            'Testing - unittest and pytest'
+            'Python Basics - Syntax & Variables',
+            'Control Flow - Loops & Conditionals',
+            'Data Structures - Lists, Dicts, Sets',
+            'Functions & Modules',
+            'File Handling - I/O Operations',
+            'OOP - Classes & Inheritance',
+            'Exception Handling',
+            'Standard Library - datetime, math, random',
+            'Virtual Environments & Pip',
+            'Testing - unittest/pytest'
+        ]
+    },
+    'data structures': {
+        name: 'GeeksforGeeks DSA',
+        url: 'https://www.geeksforgeeks.org/data-structures/',
+        platform: 'documentation',
+        youtubeChannel: 'https://www.youtube.com/@freeCodeCamp',
+        practiceSite: 'https://leetcode.com/problemset/',
+        topics: [
+            'Arrays & Strings',
+            'Linked Lists - Singly & Doubly',
+            'Stacks & Queues',
+            'Trees - Binary Trees, BST',
+            'Graphs - BFS, DFS',
+            'Hashing & HashMaps',
+            'Sorting & Searching Algorithms',
+            'Recursion & Backtracking',
+            'Dynamic Programming',
+            'Greedy Algorithms'
         ]
     },
 
-    // Backend
-    'node.js': {
-        name: 'Node.js Official Guide',
-        url: 'https://nodejs.org/en/learn/getting-started/introduction-to-nodejs',
-        platform: 'documentation',
-        youtubeChannel: 'https://www.youtube.com/@TraversyMedia',
-        practiceSite: 'https://nodeschool.io/',
+    // --- MEDICAL & PHARMACY ---
+    'pharmacy': {
+        name: 'Pharmacy Times / PubMed',
+        url: 'https://www.pharmacytimes.com/',
+        platform: 'article',
+        youtubeChannel: 'https://www.youtube.com/@SpeedPharmacology',
+        practiceSite: 'https://pharmacy-tech-test.com/',
         topics: [
-            'Introduction to Node.js - Getting Started',
-            'NPM - Package Management',
-            'Modules - CommonJS and ES Modules',
-            'File System - Reading and Writing Files',
-            'HTTP Module - Creating Servers',
-            'Express.js - Web Framework Basics',
-            'Routing - Express Router',
-            'Middleware - Custom Middleware',
-            'Database - MongoDB Integration',
-            'Authentication - JWT and Sessions',
-            'Error Handling - Try-Catch Patterns',
-            'Async Operations - Promises and Async/Await',
-            'REST APIs - Building RESTful Services',
-            'Security - Best Practices',
-            'Deployment - Production Setup'
+            'Pharmacology Basics - Drug Classes',
+            'Pharmaceutics - Dosage Forms',
+            'Medicinal Chemistry - Drug Structures',
+            'Pharmacokinetics - ADME',
+            'Pharmacotherapy - Disease Management',
+            'Pharmacy Law & Ethics',
+            'Hospital Pharmacy Practice',
+            'Community Pharmacy Management',
+            'Drug Interactions & Contraindications',
+            'Patient Counseling Skills'
+        ]
+    },
+    'medical': {
+        name: 'Osmosis / Khan Academy Medicine',
+        url: 'https://www.osmosis.org/',
+        platform: 'course',
+        youtubeChannel: 'https://www.youtube.com/@Osmosis',
+        practiceSite: 'https://www.usmle.org/practice-materials/',
+        topics: [
+            'Human Anatomy - Systems & Structures',
+            'Human Physiology - Body Functions',
+            'Biochemistry - Metabolic Pathways',
+            'Pathology - Disease Mechanisms',
+            'Microbiology - Bacteria, Viruses, Fungi',
+            'Immunology - Immune System Response',
+            'Pharmacology - Drug Mechanisms',
+            'Clinical Medicine - Diagnosis & Treatment',
+            'Medical Ethics & Law',
+            'Public Health & Epidemiology'
+        ]
+    },
+    'nursing': {
+        name: 'RegisteredNurseRN',
+        url: 'https://www.registerednursern.com/',
+        platform: 'blog',
+        youtubeChannel: 'https://www.youtube.com/@RegisteredNurseRN',
+        practiceSite: 'https://nurseslabs.com/nclex-practice-questions/',
+        topics: [
+            'Nursing Fundamentals - Care & Hygiene',
+            'Anatomy & Physiology for Nurses',
+            'Medical-Surgical Nursing',
+            'Pediatric Nursing',
+            'Maternal & Child Health',
+            'Psychiatric & Mental Health Nursing',
+            'Pharmacology for Nurses',
+            'Critical Care Nursing',
+            'Nursing Leadership & Management',
+            'Community Health Nursing'
+        ]
+    },
+
+    // --- BUSINESS & MBA ---
+    'mba': {
+        name: 'Harvard Business Review / Investopedia',
+        url: 'https://hbr.org/',
+        platform: 'article',
+        youtubeChannel: 'https://www.youtube.com/@MBA_CrystalBall',
+        practiceSite: 'https://www.investopedia.com/simulator/',
+        topics: [
+            'Marketing Management - 4Ps, Strategy',
+            'Financial Accounting - Balance Sheets',
+            'Organizational Behavior - Team Dynamics',
+            'Operations Management - Supply Chain',
+            'Strategic Management - Competitive Advantage',
+            'Corporate Finance - Valuation, Capital',
+            'Human Resource Management',
+            'Economics for Managers',
+            'Business Ethics & Law',
+            'Entrepreneurship & Innovation'
+        ]
+    },
+    'finance': {
+        name: 'CFA Institute / Investopedia',
+        url: 'https://www.investopedia.com/',
+        platform: 'article',
+        youtubeChannel: 'https://www.youtube.com/@ThePlainBagel',
+        practiceSite: 'https://www.cfainstitute.org/',
+        topics: [
+            'Financial Reporting & Analysis',
+            'Quantitative Methods',
+            'Corporate Finance',
+            'Equity Investments',
+            'Fixed Income',
+            'Derivatives',
+            'Alternative Investments',
+            'Portfolio Management',
+            'Ethical & Professional Standards',
+            'Economics'
+        ]
+    },
+    'marketing': {
+        name: 'HubSpot Academy',
+        url: 'https://academy.hubspot.com/',
+        platform: 'course',
+        youtubeChannel: 'https://www.youtube.com/@HubSpotMarketing',
+        practiceSite: 'https://neilpatel.com/blog/',
+        topics: [
+            'Digital Marketing Fundamentals',
+            'Content Marketing Strategy',
+            'Social Media Marketing',
+            'SEO (Search Engine Optimization)',
+            'Email Marketing',
+            'PPC & Advertising',
+            'Marketing Analytics & Data',
+            'Brand Management',
+            'Consumer Behavior',
+            'Market Research'
+        ]
+    },
+
+    // --- LAW ---
+    'law': {
+        name: 'Legal Information Institute (LII)',
+        url: 'https://www.law.cornell.edu/',
+        platform: 'documentation',
+        youtubeChannel: 'https://www.youtube.com/@LegalEagle',
+        practiceSite: 'https://www.barbri.com/law-school-study-aids/',
+        topics: [
+            'Constitutional Law',
+            'Contracts Law',
+            'Torts & Personal Injury',
+            'Criminal Law & Procedure',
+            'Property Law',
+            'Civil Procedure',
+            'Evidence',
+            'Administrative Law',
+            'International Law',
+            'Legal Research & Writing'
+        ]
+    },
+
+    // --- SCIENCE & ENGINEERING ---
+    'physics': {
+        name: 'Khan Academy Physics',
+        url: 'https://www.khanacademy.org/science/physics',
+        platform: 'course',
+        youtubeChannel: 'https://www.youtube.com/@physicsgirl',
+        practiceSite: 'https://www.physicsclassroom.com/',
+        topics: [
+            'Classical Mechanics - Motion, Forces',
+            'Thermodynamics - Heat, Energy',
+            'Electromagnetism - Fields, Circuits',
+            'Optics - Light, Lenses',
+            'Quantum Mechanics Basics',
+            'Relativity - Special & General',
+            'Fluid Mechanics',
+            'Waves & Oscillations',
+            'Nuclear Physics',
+            'Astrophysics Basics'
+        ]
+    },
+    'chemistry': {
+        name: 'Khan Academy Chemistry',
+        url: 'https://www.khanacademy.org/science/chemistry',
+        platform: 'course',
+        youtubeChannel: 'https://www.youtube.com/@ProfessorDaveExplains',
+        practiceSite: 'https://www.rsc.org/learn-chemistry',
+        topics: [
+            'Atomic Structure & Periodicity',
+            'Chemical Bonding',
+            'Stoichiometry & Reactions',
+            'States of Matter',
+            'Thermodynamics & Kinetics',
+            'Equilibrium',
+            'Acids & Bases',
+            'Redox Reactions',
+            'Organic Chemistry Basics',
+            'Inorganic Chemistry'
+        ]
+    },
+
+    // --- HUMANITIES ---
+    'history': {
+        name: 'CrashCourse History',
+        url: 'https://www.khanacademy.org/humanities/world-history',
+        platform: 'course',
+        youtubeChannel: 'https://www.youtube.com/@CrashCourse',
+        practiceSite: 'https://www.history.com/',
+        topics: [
+            'Ancient Civilizations',
+            'The Middle Ages',
+            'The Renaissance & Reformation',
+            'Age of Exploration',
+            'The Enlightenment',
+            'Industrial Revolution',
+            'World War I & II',
+            'Cold War Era',
+            'Decolonization',
+            'Modern Global History'
+        ]
+    },
+    'psychology': {
+        name: 'Verywell Mind / Simply Psychology',
+        url: 'https://www.simplypsychology.org/',
+        platform: 'article',
+        youtubeChannel: 'https://www.youtube.com/@Psych2go',
+        practiceSite: 'https://www.apa.org/',
+        topics: [
+            'Intro to Psychology',
+            'Biological Basis of Behavior',
+            'Sensation & Perception',
+            'Learning & Conditioning',
+            'Cognitive Psychology - Memory',
+            'Developmental Psychology',
+            'Personality Theories',
+            'Abnormal Psychology',
+            'Social Psychology',
+            'Research Methods in Psychology'
         ]
     },
 
@@ -185,9 +307,20 @@ const CURATED_RESOURCES = {
         name: 'Generic Study Resource',
         url: null,
         platform: 'generic',
-        youtubeChannel: 'https://www.youtube.com/results?search_query=programming+tutorials',
-        practiceSite: 'https://www.codecademy.com/',
-        topics: []
+        youtubeChannel: 'https://www.youtube.com/results?search_query=educational+tutorials',
+        practiceSite: 'https://www.quizlet.com/',
+        topics: [
+            'Core Concepts Overview',
+            'Fundamental Principles',
+            'Key Theories & Models',
+            'Historical Context',
+            'Practical Applications',
+            'Case Studies',
+            'Current Trends',
+            'Research Methods',
+            'Advanced Topics',
+            'Final Review & Synthesis'
+        ]
     }
 };
 
@@ -216,24 +349,25 @@ function selectBestResource(subjectName, userProvidedLink = null) {
     }
 
     // Priority 3: Category-based matching
-    if (name.match(/web|html|css|frontend|responsive/)) {
-        return { ...CURATED_RESOURCES['web development'], isCustom: false };
-    }
-    if (name.match(/react|next|vue|angular/)) {
-        return { ...CURATED_RESOURCES['react'], isCustom: false };
-    }
-    if (name.match(/javascript|js|ecmascript/)) {
-        return { ...CURATED_RESOURCES['javascript'], isCustom: false };
-    }
-    if (name.match(/dsa|data structure|algorithm/)) {
-        return { ...CURATED_RESOURCES['data structures'], isCustom: false };
-    }
-    if (name.match(/python|py/)) {
-        return { ...CURATED_RESOURCES['python'], isCustom: false };
-    }
-    if (name.match(/node|express|backend/)) {
-        return { ...CURATED_RESOURCES['node.js'], isCustom: false };
-    }
+    // Priority 3: Category-based matching
+    if (name.match(/web|html|css|frontend|responsive/)) return { ...CURATED_RESOURCES['web development'], isCustom: false };
+    if (name.match(/react|next|vue|angular/)) return { ...CURATED_RESOURCES['react'], isCustom: false };
+    if (name.match(/javascript|js|ecmascript/)) return { ...CURATED_RESOURCES['javascript'], isCustom: false };
+    if (name.match(/dsa|data structure|algorithm/)) return { ...CURATED_RESOURCES['data structures'], isCustom: false };
+    if (name.match(/python|py/)) return { ...CURATED_RESOURCES['python'], isCustom: false };
+    if (name.match(/node|express|backend/)) return { ...CURATED_RESOURCES['node.js'], isCustom: false };
+
+    // New Categories
+    if (name.match(/pharmacy|drug|medicine|pharma/)) return { ...CURATED_RESOURCES['pharmacy'], isCustom: false };
+    if (name.match(/nurse|nursing|patient/)) return { ...CURATED_RESOURCES['nursing'], isCustom: false };
+    if (name.match(/health|doctor|mbbs|medical|biology|anatomy/)) return { ...CURATED_RESOURCES['medical'], isCustom: false };
+    if (name.match(/mba|business|management|accounting|finance|economics/)) return { ...CURATED_RESOURCES['mba'], isCustom: false }; // Broad match
+    if (name.match(/marketing|seo|brand/)) return { ...CURATED_RESOURCES['marketing'], isCustom: false };
+    if (name.match(/law|legal|court|constitution/)) return { ...CURATED_RESOURCES['law'], isCustom: false };
+    if (name.match(/physics|mechanics|thermo/)) return { ...CURATED_RESOURCES['physics'], isCustom: false };
+    if (name.match(/chemistry|reaction|organic/)) return { ...CURATED_RESOURCES['chemistry'], isCustom: false };
+    if (name.match(/history|civilization|war/)) return { ...CURATED_RESOURCES['history'], isCustom: false };
+    if (name.match(/psychology|mind|behavior/)) return { ...CURATED_RESOURCES['psychology'], isCustom: false };
 
     // Fallback to default
     return { ...CURATED_RESOURCES['default'], isCustom: false };
@@ -343,7 +477,9 @@ function generateEnhancedRoadmap(subject, examDate, difficulty, resource) {
                 youtube: (resource.youtubeChannel && resource.name !== 'Generic Study Resource') ?
                     `https://www.youtube.com/results?search_query=${encodeURIComponent(resource.name + ' ' + topic.name + ' tutorial -shorts')}` :
                     `https://www.youtube.com/results?search_query=${encodeURIComponent(subject + ' ' + topic.name + ' tutorial -shorts')}`,
-                practice: resource.practiceSite || `https://www.google.com/search?q=${encodeURIComponent(subject + ' ' + topic.name + ' practice questions')}`
+                practice: resource.practiceSite || `https://www.google.com/search?q=${encodeURIComponent(subject + ' ' + topic.name + ' practice questions')}`,
+                udemy: `https://www.udemy.com/courses/search/?src=ukw&q=${encodeURIComponent(subject + ' ' + topic.name)}`,
+                coursera: `https://www.coursera.org/search?query=${encodeURIComponent(subject + ' ' + topic.name)}`
             },
             time: topic.time,
             difficulty: topic.difficulty
@@ -376,7 +512,9 @@ function generateEnhancedRoadmap(subject, examDate, difficulty, resource) {
                 youtube: (resource.youtubeChannel && resource.name !== 'Generic Study Resource') ?
                     `https://www.youtube.com/results?search_query=${encodeURIComponent(resource.name + ' ' + topic.name + ' tutorial -shorts')}` :
                     `https://www.youtube.com/results?search_query=${encodeURIComponent(subject + ' ' + topic.name + ' tutorial -shorts')}`,
-                practice: resource.practiceSite || `https://www.google.com/search?q=${encodeURIComponent(subject + ' ' + topic.name + ' practice exercises')}`
+                practice: resource.practiceSite || `https://www.google.com/search?q=${encodeURIComponent(subject + ' ' + topic.name + ' practice exercises')}`,
+                udemy: `https://www.udemy.com/courses/search/?src=ukw&q=${encodeURIComponent(subject + ' ' + topic.name)}`,
+                coursera: `https://www.coursera.org/search?query=${encodeURIComponent(subject + ' ' + topic.name)}`
             },
             time: topic.time,
             difficulty: topic.difficulty
@@ -409,7 +547,9 @@ function generateEnhancedRoadmap(subject, examDate, difficulty, resource) {
                 youtube: (resource.youtubeChannel && resource.name !== 'Generic Study Resource') ?
                     `https://www.youtube.com/results?search_query=${encodeURIComponent(resource.name + ' ' + topic.name + ' tutorial -shorts')}` :
                     `https://www.youtube.com/results?search_query=${encodeURIComponent(subject + ' ' + topic.name + ' tutorial -shorts')}`,
-                practice: resource.practiceSite || `https://www.google.com/search?q=${encodeURIComponent(subject + ' ' + topic.name + ' problems')}`
+                practice: resource.practiceSite || `https://www.google.com/search?q=${encodeURIComponent(subject + ' ' + topic.name + ' problems')}`,
+                udemy: `https://www.udemy.com/courses/search/?src=ukw&q=${encodeURIComponent(subject + ' ' + topic.name)}`,
+                coursera: `https://www.coursera.org/search?query=${encodeURIComponent(subject + ' ' + topic.name)}`
             },
             time: topic.time,
             difficulty: topic.difficulty
@@ -443,7 +583,9 @@ function generateEnhancedRoadmap(subject, examDate, difficulty, resource) {
                 youtube: (resource.youtubeChannel && resource.name !== 'Generic Study Resource') ?
                     `https://www.youtube.com/results?search_query=${encodeURIComponent(resource.name + ' ' + subject + ' full course -shorts')}` :
                     `https://www.youtube.com/results?search_query=${encodeURIComponent(subject + ' full course -shorts')}`,
-                practice: resource.practiceSite || `https://www.google.com/search?q=${encodeURIComponent(subject + ' mock test practice')}`
+                practice: resource.practiceSite || `https://www.google.com/search?q=${encodeURIComponent(subject + ' mock test practice')}`,
+                udemy: `https://www.udemy.com/courses/search/?src=ukw&q=${encodeURIComponent(subject + ' ' + topic.name)}`,
+                coursera: `https://www.coursera.org/search?query=${encodeURIComponent(subject + ' ' + topic.name)}`
             },
             time: topic.time || '4-6 hours',
             difficulty: topic.difficulty || 'Medium'
@@ -477,6 +619,65 @@ function generateEnhancedRoadmap(subject, examDate, difficulty, resource) {
 }
 
 // ========================================
+// GEMINI AI GENERATOR
+// ========================================
+async function generateGeminiRoadmap(subject, examDate, difficulty, apiKey) {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const prompt = `
+        Act as an expert study planner. Create a detailed, structured study roadmap for the subject: "${subject.name}".
+        Exam Date: ${subject.examDate} (Today is ${new Date().toLocaleDateString()}).
+        Difficulty Level: ${difficulty}.
+        
+        The roadmap should be broken down into weeks.
+        Total duration should be reasonable based on the time remaining (min 4 weeks, max 12 weeks).
+        
+        Return the response strictly as a VALID JSON object with the following structure:
+        {
+            "weeks": [
+                {
+                    "title": "Week 1 - [Focus Area]",
+                    "phase": "PHASE 1 - [Foundation/Core/Practice/Revision]",
+                    "suggestions": ["Tip 1", "Tip 2", "Tip 3"],
+                    "tasks": [
+                        {
+                            "title": "Topic Name",
+                            "description": "Brief instruction",
+                            "difficulty": "Easy/Medium/Hard",
+                            "time": "2-4 hours",
+                            "book": "Recommended Book/Resource"
+                        }
+                    ]
+                }
+            ],
+            "tips": ["General study tip 1", "General study tip 2", "General study tip 3"],
+            "resourceRecommendation": {
+                "name": "Best Book/Course Name",
+                "url": "https://example.com"
+            }
+        }
+        
+        Ensure the JSON is valid and parsable. Do not include markdown naming like \`\`\`json.
+    `;
+
+    try {
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        let text = response.text();
+
+        // Clean cleanup if markdown code blocks are returned
+        text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+
+        const data = JSON.parse(text);
+        return data; // Expected to match the structure
+    } catch (error) {
+        console.error("Gemini Generation Failed:", error);
+        return null; // Fallback to static
+    }
+}
+
+// ========================================
 // API ROUTE HANDLER
 // ========================================
 export async function POST(request) {
@@ -488,6 +689,49 @@ export async function POST(request) {
                 error: 'Missing required subject data'
             }, { status: 400 });
         }
+
+        // 1. Try AI Generation if Key Exists
+        const geminiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+        let aiRoadmap = null;
+
+        if (geminiKey && geminiKey.length > 20) { // Basic check for potentially valid key
+            console.log("🤖 Attempting AI Roadmap Generation for:", subject.name);
+            aiRoadmap = await generateGeminiRoadmap(subject, subject.examDate, subject.difficulty || 'medium', geminiKey);
+        }
+
+        if (aiRoadmap) {
+            // Decorate AI response with links (since AI returns raw tasks)
+            const weeksWithLinks = aiRoadmap.weeks.map(week => ({
+                ...week,
+                tasks: week.tasks.map(task => ({
+                    ...task,
+                    links: {
+                        resource: `https://www.google.com/search?q=${encodeURIComponent(subject.name + ' ' + task.title)}`,
+                        google: `https://www.google.com/search?q=${encodeURIComponent(subject.name + ' ' + task.title + ' tutorial')}`,
+                        youtube: `https://www.youtube.com/results?search_query=${encodeURIComponent(subject.name + ' ' + task.title + ' tutorial')}`,
+                        practice: `https://www.google.com/search?q=${encodeURIComponent(subject.name + ' ' + task.title + ' practice questions')}`,
+                        udemy: `https://www.udemy.com/courses/search/?src=ukw&q=${encodeURIComponent(subject.name + ' ' + task.title)}`,
+                        coursera: `https://www.coursera.org/search?query=${encodeURIComponent(subject.name + ' ' + task.title)}`
+                    }
+                }))
+            }));
+
+            return NextResponse.json({
+                roadmap: weeksWithLinks,
+                tips: aiRoadmap.tips,
+                subjectInfo: {
+                    id: subject.id,
+                    name: subject.name,
+                    examDate: subject.examDate,
+                    difficulty: subject.difficulty,
+                    resourceLink: aiRoadmap.resourceRecommendation?.url || subject.resourceLink,
+                    recommendedResource: aiRoadmap.resourceRecommendation?.name || "AI Recommended Path"
+                }
+            });
+        }
+
+        // 2. Fallback to Static/Curated Generator
+        console.log("📚 Using Standard Curated Generator for:", subject.name);
 
         // Select best resource for this subject
         const resource = selectBestResource(subject.name, subject.resourceLink);

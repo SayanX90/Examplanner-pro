@@ -385,23 +385,26 @@ function generateProgressiveTopics(resourceTopics, weekNumber, totalWeeks, phase
 
         const weekTopics = resourceTopics.slice(startIndex, endIndex);
 
-        // Convert to task format
-        return weekTopics.map((topic, index) => {
-            const difficulty = phase === 'foundation' ? 'Easy' :
-                phase === 'core' ? 'Medium' :
-                    phase === 'practice' ? 'Hard' : 'Medium';
+        // FIX: If we run out of curated topics, fall back to generic ones for meaningful content
+        if (weekTopics.length > 0) {
+            // Convert to task format
+            return weekTopics.map((topic, index) => {
+                const difficulty = phase === 'foundation' ? 'Easy' :
+                    phase === 'core' ? 'Medium' :
+                        phase === 'practice' ? 'Hard' : 'Medium';
 
-            const time = phase === 'foundation' ? '2-4 hours' :
-                phase === 'core' ? '4-6 hours' :
-                    phase === 'practice' ? '5-8 hours' : '4-6 hours';
+                const time = phase === 'foundation' ? '2-4 hours' :
+                    phase === 'core' ? '4-6 hours' :
+                        phase === 'practice' ? '5-8 hours' : '4-6 hours';
 
-            return {
-                name: topic,
-                difficulty: difficulty,
-                time: time,
-                chapter: `Topic ${startIndex + index + 1}`
-            };
-        });
+                return {
+                    name: topic,
+                    difficulty: difficulty,
+                    time: time,
+                    chapter: `Topic ${startIndex + index + 1}`
+                };
+            });
+        }
     }
 
     // Fallback: Generic progressive topics (but still varied by week)
@@ -573,23 +576,50 @@ function generateEnhancedRoadmap(subject, examDate, difficulty, resource) {
         const isLastWeek = i === revisionWeeks - 1;
         const topics = generateProgressiveTopics(resource.topics, weekNumber, totalWeeks, 'revision', subject);
 
-        const tasks = topics.map(topic => ({
-            title: topic.name || `Comprehensive Revision ${i + 1}`,
-            description: `Review all topics from ${resource.name}`,
-            book: resource.name,
-            links: {
-                resource: resource.url || `https://www.google.com/search?q=${encodeURIComponent(subject + ' revision')}`,
-                google: `https://www.google.com/search?q=${encodeURIComponent(subject + ' ' + topic.name + ' revision')}`,
-                youtube: (resource.youtubeChannel && resource.name !== 'Generic Study Resource') ?
-                    `https://www.youtube.com/results?search_query=${encodeURIComponent(resource.name + ' ' + subject + ' full course -shorts')}` :
-                    `https://www.youtube.com/results?search_query=${encodeURIComponent(subject + ' full course -shorts')}`,
-                practice: resource.practiceSite || `https://www.google.com/search?q=${encodeURIComponent(subject + ' mock test practice')}`,
-                udemy: `https://www.udemy.com/courses/search/?src=ukw&q=${encodeURIComponent(subject + ' ' + topic.name)}`,
-                coursera: `https://www.coursera.org/search?query=${encodeURIComponent(subject + ' ' + topic.name)}`
-            },
-            time: topic.time || '4-6 hours',
-            difficulty: topic.difficulty || 'Medium'
-        }));
+        const tasks = topics.map(topic => {
+            // Helper to create better search queries for generic revision topics
+            let searchTopic = topic.name || `Comprehensive Revision ${i + 1}`;
+
+            // If it's a generic topic, refine the search term
+            if (searchTopic.includes('Revision Module')) searchTopic = 'Quick Revision Review';
+            if (searchTopic.includes('Practice Test')) searchTopic = 'Interview Questions Practice';
+            if (searchTopic.includes('Final Review')) searchTopic = 'Crash Course Review';
+            if (searchTopic.includes('Problem Set')) searchTopic = 'Practice Problems';
+
+            // Determine query suffix based on context
+            let querySuffix = 'tutorial';
+            if (searchTopic.toLowerCase().includes('questions') || searchTopic.toLowerCase().includes('practice')) querySuffix = 'questions';
+            if (searchTopic.toLowerCase().includes('review') || searchTopic.toLowerCase().includes('revision')) querySuffix = 'guide';
+
+            // Check if it's a generic revision topic where we should avoid potentially repetitive resource-specific searches
+            const isGenericRevision = topic.name && (topic.name.includes('Revision Module') || topic.name.includes('Practice Test') || topic.name.includes('Final Review') || topic.name.includes('Problem Set'));
+
+            // Construct YouTube Query
+            // If it's a generic revision task, we intentionally OMIT the resource name to find broader, concept-specific videos (like random interview questions)
+            // instead of just the main course channel again.
+            let youtubeQuery = '';
+            if (resource.youtubeChannel && resource.name !== 'Generic Study Resource' && !isGenericRevision) {
+                youtubeQuery = `${resource.name} ${searchTopic} ${subject} ${querySuffix} -shorts`;
+            } else {
+                youtubeQuery = `${searchTopic} ${subject} ${querySuffix} -shorts`;
+            }
+
+            return {
+                title: topic.name || `Comprehensive Revision ${i + 1}`,
+                description: `Review all topics from ${resource.name}`,
+                book: resource.name,
+                links: {
+                    resource: resource.url || `https://www.google.com/search?q=${encodeURIComponent(subject + ' revision')}`,
+                    google: `https://www.google.com/search?q=${encodeURIComponent(subject + ' ' + topic.name + ' revision')}`,
+                    youtube: `https://www.youtube.com/results?search_query=${encodeURIComponent(youtubeQuery)}`,
+                    practice: resource.practiceSite || `https://www.google.com/search?q=${encodeURIComponent(subject + ' mock test practice')}`,
+                    udemy: `https://www.udemy.com/courses/search/?src=ukw&q=${encodeURIComponent(subject + ' ' + topic.name)}`,
+                    coursera: `https://www.coursera.org/search?query=${encodeURIComponent(subject + ' ' + topic.name)}`
+                },
+                time: topic.time || '4-6 hours',
+                difficulty: topic.difficulty || 'Medium'
+            };
+        });
 
         weeks.push({
             title: `Week ${weekNumber} - ${isLastWeek ? 'Final Revision' : 'Revision'}`,
@@ -694,12 +724,19 @@ export async function POST(request) {
         const geminiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
         let aiRoadmap = null;
 
-        if (geminiKey && geminiKey.length > 20) { // Basic check for potentially valid key
+        if (geminiKey && geminiKey.length > 20 && geminiKey !== 'your-gemini-api-key-here') { // Basic check for potentially valid key
             console.log("🤖 Attempting AI Roadmap Generation for:", subject.name);
-            aiRoadmap = await generateGeminiRoadmap(subject, subject.examDate, subject.difficulty || 'medium', geminiKey);
+            try {
+                aiRoadmap = await generateGeminiRoadmap(subject, subject.examDate, subject.difficulty || 'medium', geminiKey);
+            } catch (aiError) {
+                console.error("⚠️ AI Generation crashed, falling back to static:", aiError);
+                aiRoadmap = null;
+            }
+        } else {
+            console.log("⚠️ meaningful API key not found or is placeholder, skipping AI generation.");
         }
 
-        if (aiRoadmap) {
+        if (aiRoadmap && aiRoadmap.weeks && Array.isArray(aiRoadmap.weeks) && aiRoadmap.weeks.length > 0) {
             // Decorate AI response with links (since AI returns raw tasks)
             const weeksWithLinks = aiRoadmap.weeks.map(week => ({
                 ...week,
